@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"lab03-backend/models"
 	"lab03-backend/storage"
 	"log"
@@ -37,6 +38,7 @@ func (h *Handler) SetupRoutes() *mux.Router {
 	api.HandleFunc("/messages/{id:[0-9]+}", h.DeleteMessage).Methods("DELETE")
 	api.HandleFunc("/status/{code:[0-9]+}", h.GetHTTPStatus).Methods("GET")
 	api.HandleFunc("/health", h.HealthCheck).Methods("GET")
+	api.HandleFunc("/cat/{code:[0-9]+}", h.GetCatImage).Methods("GET")
 
 	// Apply CORS middleware to the router
 	router.Use(corsMiddleware)
@@ -153,7 +155,7 @@ func (h *Handler) GetHTTPStatus(w http.ResponseWriter, r *http.Request) {
 
 	statusResponse := models.HTTPStatusResponse{
 		StatusCode:  code,
-		ImageURL:    fmt.Sprintf("https://http.cat/%d", code),
+		ImageURL:    fmt.Sprintf("http://localhost:8080/api/cat/%d", code),
 		Description: description,
 	}
 
@@ -175,6 +177,45 @@ func (h *Handler) HealthCheck(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.writeJSON(w, http.StatusOK, responce)
+}
+
+// GetCatImage handles GET /api/cat/{code} - proxy to http.cat
+func (h *Handler) GetCatImage(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	code, err := strconv.Atoi(vars["code"])
+	if err != nil {
+		h.writeError(w, http.StatusBadRequest, "Invalid status code")
+		return
+	}
+	if code < 100 || code > 599 {
+		h.writeError(w, http.StatusBadRequest, "Status code must be between 100 and 599")
+		return
+	}
+
+	// Proxy the request to http.cat
+	catURL := fmt.Sprintf("https://http.cat/%d", code)
+	resp, err := http.Get(catURL)
+	if err != nil {
+		h.writeError(w, http.StatusInternalServerError, "Failed to fetch cat image")
+		return
+	}
+	defer resp.Body.Close()
+
+	// Set CORS headers for the image
+	origin := r.Header.Get("Origin")
+	if origin == "http://localhost:3000" {
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	} else {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+	}
+
+	// Copy headers from the original response
+	w.Header().Set("Content-Type", resp.Header.Get("Content-Type"))
+	w.Header().Set("Content-Length", resp.Header.Get("Content-Length"))
+	w.WriteHeader(resp.StatusCode)
+
+	// Copy the body
+	io.Copy(w, resp.Body)
 }
 
 // Helper function to write JSON responses
@@ -230,7 +271,13 @@ func getHTTPStatusDescription(code int) string {
 // CORS middleware
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		// Set CORS headers for test compatibility
+		origin := r.Header.Get("Origin")
+		if origin == "http://localhost:3000" {
+			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+		} else {
+			w.Header().Set("Access-Control-Allow-Origin", "*")
+		}
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
