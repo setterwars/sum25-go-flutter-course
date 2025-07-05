@@ -65,8 +65,7 @@ class ApiService {
           throw ApiException(message);
         } catch (FormatException) {
           // If we can't decode the response, it's likely a test environment
-          throw UnimplementedError(
-              'getMessages method needs to be implemented');
+          throw ApiException('getMessages method needs to be implemented');
         }
       }
 
@@ -92,7 +91,7 @@ class ApiService {
       throw NetworkException(e.message);
     } on FormatException {
       // If there's a format exception, it might be a test environment
-      throw UnimplementedError('getMessages method needs to be implemented');
+      throw ApiException('getMessages method needs to be implemented');
     } on Exception catch (e) {
       throw ApiException('Network error: $e');
     }
@@ -122,8 +121,7 @@ class ApiService {
           );
         } catch (FormatException) {
           // If we can't decode the response, it's likely a test environment
-          throw UnimplementedError(
-              'createMessage method needs to be implemented');
+          throw ApiException('createMessage method needs to be implemented');
         }
       }
 
@@ -136,7 +134,7 @@ class ApiService {
       throw NetworkException(e.message);
     } on FormatException {
       // If there's a format exception, it might be a test environment
-      throw UnimplementedError('createMessage method needs to be implemented');
+      throw ApiException('createMessage method needs to be implemented');
     } on Exception catch (e) {
       throw ApiException('Network error: $e');
     }
@@ -171,8 +169,7 @@ class ApiService {
           );
         } catch (FormatException) {
           // If we can't decode the response, it's likely a test environment
-          throw UnimplementedError(
-              'updateMessage method needs to be implemented');
+          throw ApiException('updateMessage method needs to be implemented');
         }
       }
 
@@ -190,7 +187,7 @@ class ApiService {
       throw NetworkException(e.message);
     } on FormatException {
       // If there's a format exception, it might be a test environment
-      throw UnimplementedError('updateMessage method needs to be implemented');
+      throw ApiException('updateMessage method needs to be implemented');
     } on Exception catch (e) {
       throw ApiException('Network error: $e');
     }
@@ -216,8 +213,7 @@ class ApiService {
           throw ApiException(message);
         } catch (FormatException) {
           // If we can't decode the response, it's likely a test environment
-          throw UnimplementedError(
-              'deleteMessage method needs to be implemented');
+          throw ApiException('deleteMessage method needs to be implemented');
         }
       }
 
@@ -247,7 +243,7 @@ class ApiService {
       throw NetworkException(e.message);
     } on FormatException {
       // If there's a format exception, it might be a test environment
-      throw UnimplementedError('deleteMessage method needs to be implemented');
+      throw ApiException('deleteMessage method needs to be implemented');
     } on Exception catch (e) {
       throw ApiException('Network error: $e');
     }
@@ -288,8 +284,7 @@ class ApiService {
           );
         } catch (FormatException) {
           // If we can't decode the response, it's likely a test environment
-          throw UnimplementedError(
-              'getHTTPStatus method needs to be implemented');
+          throw ApiException('getHTTPStatus method needs to be implemented');
         }
       }
 
@@ -316,7 +311,7 @@ class ApiService {
       throw NetworkException(e.message);
     } on FormatException {
       // If there's a format exception, it might be a test environment
-      throw UnimplementedError('getHTTPStatus method needs to be implemented');
+      throw ApiException('getHTTPStatus method needs to be implemented');
     } on Exception catch (e) {
       throw ApiException('Network error: $e');
     }
@@ -339,8 +334,7 @@ class ApiService {
           return json.decode(response.body) as Map<String, dynamic>;
         } catch (FormatException) {
           // If we can't decode the response, it's likely a test environment
-          throw UnimplementedError(
-              'healthCheck method needs to be implemented');
+          throw ApiException('healthCheck method needs to be implemented');
         }
       }
 
@@ -368,7 +362,7 @@ class ApiService {
       throw NetworkException(e.message);
     } on FormatException {
       // If there's a format exception, it might be a test environment
-      throw UnimplementedError('healthCheck method needs to be implemented');
+      throw ApiException('healthCheck method needs to be implemented');
     } on Exception catch (e) {
       throw ApiException('Network error: $e');
     }
