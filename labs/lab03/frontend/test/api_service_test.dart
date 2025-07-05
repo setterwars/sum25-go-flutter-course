@@ -328,21 +328,21 @@ void main() {
         apiService.dispose();
       });
 
-      test('should validate status code ranges', () {
-        // Valid ranges - these should work with the API
-        expect(() => ApiService().getHTTPStatus(100), returnsNormally);
-        expect(() => ApiService().getHTTPStatus(200), returnsNormally);
-        expect(() => ApiService().getHTTPStatus(404), returnsNormally);
-        expect(() => ApiService().getHTTPStatus(500), returnsNormally);
-        expect(() => ApiService().getHTTPStatus(599), returnsNormally);
-
-        // Invalid ranges - these should throw ApiException when the backend rejects them
+      test('should validate status code ranges', () async {
+        // Invalid status codes should throw validation error
         expect(
             () => ApiService().getHTTPStatus(99), throwsA(isA<ApiException>()));
         expect(() => ApiService().getHTTPStatus(600),
             throwsA(isA<ApiException>()));
         expect(
             () => ApiService().getHTTPStatus(-1), throwsA(isA<ApiException>()));
+
+        // Valid status codes should return a Future (may fail with network error, but not validation)
+        expect(ApiService().getHTTPStatus(100), completes);
+        expect(ApiService().getHTTPStatus(200), completes);
+        expect(ApiService().getHTTPStatus(404), completes);
+        expect(ApiService().getHTTPStatus(500), completes);
+        expect(ApiService().getHTTPStatus(599), completes);
       });
 
       test('should get HTTP status for multiple codes', () async {
