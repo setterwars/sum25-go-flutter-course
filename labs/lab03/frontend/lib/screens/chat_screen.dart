@@ -372,7 +372,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('TODO: REST API Chat'),
+        title: const Text('REST API Chat'),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -385,7 +385,7 @@ class _ChatScreenState extends State<ChatScreen> {
           : _error != null
               ? _buildErrorWidget()
               : _messages.isEmpty
-                  ? const Center(child: Text('TODO: No messages yet.'))
+                  ? const Center(child: Text('No messages yet.'))
                   : ListView.builder(
                       reverse: true,
                       itemCount: _messages.length,
