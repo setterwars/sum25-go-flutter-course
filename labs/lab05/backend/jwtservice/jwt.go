@@ -28,7 +28,7 @@ func NewJWTService(secretKey string) (*JWTService, error) {
 // - Token expires in 24 hours
 // - Use HS256 signing method
 func (j *JWTService) GenerateToken(userID int, email string) (string, error) {
-	if userID < 0 {
+	if userID <= 0 {
 		return "", errors.New("userID must be positive")
 	}
 	if email == "" {

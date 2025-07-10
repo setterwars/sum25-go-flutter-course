@@ -114,8 +114,14 @@ func ValidatePassword(password string) error {
 			hasNumber = true
 		}
 	}
-	if !hasUpper || !hasLower || !hasNumber {
-		return errors.New("password must contain uppercase, lowercase, and number")
+	if !hasUpper {
+		return errors.New("password must contain at least one uppercase letter")
+	}
+	if !hasLower {
+		return errors.New("password must contain at least one lowercase letter")
+	}
+	if !hasNumber {
+		return errors.New("password must contain at least one number")
 	}
 	return nil
 }

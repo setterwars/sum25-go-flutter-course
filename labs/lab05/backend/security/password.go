@@ -11,30 +11,22 @@ import (
 // PasswordService handles password operations
 type PasswordService struct{}
 
-func _exactlyOneNumber(s string) bool {
-	count := 0
+func hasNumber(s string) bool {
 	for _, r := range s {
 		if unicode.IsDigit(r) {
-			count++
-			if count > 1 {
-				return false
-			}
+			return true
 		}
 	}
-	return count == 1
+	return false
 }
 
-func _exactlyOneLetter(s string) bool {
-	count := 0
+func hasLetter(s string) bool {
 	for _, r := range s {
 		if unicode.IsLetter(r) {
-			count++
-			if count > 1 {
-				return false
-			}
+			return true
 		}
 	}
-	return count == 1
+	return false
 }
 
 // NewPasswordService creates a new password service
@@ -86,7 +78,7 @@ func ValidatePassword(password string) error {
 	if len(password) < 6 {
 		return errors.New("password must be at least 6 chartacter")
 	}
-	if !(_exactlyOneLetter(password) && _exactlyOneNumber(password)) {
+	if !(hasLetter(password) && hasNumber(password)) {
 		return errors.New("password must Contains at least one letter and one number")
 	}
 	return nil
